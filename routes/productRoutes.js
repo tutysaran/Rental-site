@@ -1,6 +1,7 @@
 import express from "express";
 import Product from "../models/Product.js";   
 import upload from "../middleware/upload.js"; 
+
 const router = express.Router();
 
 // CREATE product
@@ -14,7 +15,9 @@ router.post("/", upload.single("image"), async (req, res) => {
       brand: req.body.brand,
       mileage: req.body.mileage,
       duration: req.body.duration,
-      image: req.file ? `/uploads/${req.file.filename}` : null,
+      image: req.file 
+        ? `/uploads/${req.file.filename}` 
+        : "https://via.placeholder.com/400x300?text=No+Image",
     });
 
     await product.save();
@@ -57,7 +60,9 @@ router.put("/:id", upload.single("image"), async (req, res) => {
       mileage: req.body.mileage,
       duration: req.body.duration,
     };
-    if (req.file) updateData.image = `/uploads/${req.file.filename}`;
+    if (req.file) {
+      updateData.image = `/uploads/${req.file.filename}`;
+    }
 
     const product = await Product.findByIdAndUpdate(req.params.id, updateData, {
       new: true,

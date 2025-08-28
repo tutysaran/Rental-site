@@ -5,7 +5,11 @@ const productSchema = new mongoose.Schema(
     name: { type: String, required: true },
     price: { type: Number, required: true },
     category: { type: String, required: true },
-    image: { type: String }, 
+    image: { 
+      type: String, 
+      required: true,
+      default: "https://via.placeholder.com/400x300?text=No+Image" // fallback
+    },
     type: { type: String, required: true },
     brand: { type: String, required: true },
     mileage: { type: Number, required: true },
