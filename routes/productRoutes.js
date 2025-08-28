@@ -1,7 +1,6 @@
 import express from "express";
-import Product from "../models/Product.js";
-import upload from "../middleware/upload.js";
-
+import Product from "../models/Product.js";   
+import upload from "../middleware/upload.js"; 
 const router = express.Router();
 
 // CREATE product
