@@ -5,11 +5,11 @@ const productSchema = new mongoose.Schema(
     name: { type: String, required: true },
     price: { type: Number, required: true },
     category: { type: String, required: true },
-    image: { type: String }, // optional
+    image: { type: String }, // optional (multer will store path)
     type: { type: String, required: true },
     brand: { type: String, required: true },
     mileage: { type: Number, required: true },
-    duration: { type: String, required: true }
+    duration: { type: String, required: true },
   },
   { timestamps: true }
 );
