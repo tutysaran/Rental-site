@@ -1,8 +1,13 @@
-const Product = require("../models/product.model");
-const multer = require("multer");
-const path = require("path");
+import Product from "../models/Product.js";
+import multer from "multer";
+import path from "path";
+import { fileURLToPath } from "url";
 
-// Multer storage config
+// __dirname for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Multer setup
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, path.join(__dirname, "../uploads"));
@@ -12,37 +17,27 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage: storage }).array("images", 5);
+export const upload = multer({ storage }).array("images", 5);
 
 // Create Product
-const createProduct = async (req, res) => {
+export const createProduct = async (req, res) => {
   try {
-    const { name, price, rating, category, description, images } = req.body;
+    const { name, price, category, type, brand, mileage, duration, image } = req.body;
 
-    if (!name || !price || !category || !description || !images || !rating) {
-      return res
-        .status(400)
-        .json({ message: "All fields including images are required." });
+    if (!name || !price || !category || !type || !brand || !mileage || !duration || !image) {
+      return res.status(400).json({ message: "All fields are required" });
     }
 
-    const product = new Product({
-      name,
-      price,
-      rating,
-      description,
-      images,
-      category,
-    });
-
+    const product = new Product({ name, price, category, type, brand, mileage, duration, image });
     await product.save();
-    res.status(200).json(product);
+    res.status(201).json(product);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-// Get all Products
-const getProducts = async (req, res) => {
+// Get All Products
+export const getProducts = async (req, res) => {
   try {
     const products = await Product.find();
     res.status(200).json(products);
@@ -52,7 +47,7 @@ const getProducts = async (req, res) => {
 };
 
 // Get Product by ID
-const getProductsById = async (req, res) => {
+export const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product) return res.status(404).json({ message: "Product not found" });
@@ -63,11 +58,9 @@ const getProductsById = async (req, res) => {
 };
 
 // Update Product
-const updateProduct = async (req, res) => {
+export const updateProduct = async (req, res) => {
   try {
-    const updated = await Product.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const updated = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!updated) return res.status(404).json({ message: "Product not found" });
     res.status(200).json(updated);
   } catch (err) {
@@ -76,7 +69,7 @@ const updateProduct = async (req, res) => {
 };
 
 // Delete Product
-const deleteProduct = async (req, res) => {
+export const deleteProduct = async (req, res) => {
   try {
     const deleted = await Product.findByIdAndDelete(req.params.id);
     if (!deleted) return res.status(404).json({ message: "Product not found" });
@@ -84,13 +77,4 @@ const deleteProduct = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-};
-
-module.exports = {
-  upload,
-  createProduct,
-  getProducts,
-  getProductsById,
-  updateProduct,
-  deleteProduct,
 };
