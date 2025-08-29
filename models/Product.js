@@ -8,7 +8,6 @@ const productSchema = new mongoose.Schema(
     image: { 
       type: String, 
       required: true,
-      default: "https://via.placeholder.com/400x300?text=No+Image" // fallback
     },
     type: { type: String, required: true },
     brand: { type: String, required: true },
